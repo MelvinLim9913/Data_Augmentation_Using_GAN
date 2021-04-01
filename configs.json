@@ -1,0 +1,58 @@
+{
+  "image_file_path": {
+    "original": {
+      "train": "dataset/original/train",
+      "valid": "dataset/original/valid",
+      "test" : "dataset/original/test"
+    },
+    "esrgan": {
+      "train": "",
+      "valid": "",
+      "test": ""
+    },
+    "wgan": {
+      "train": "",
+      "valid": "",
+      "test": ""
+    }
+  },
+  "weight_path": "weight",
+  "model_configs": {
+    "CnnClassifier": {
+      "models": [
+        {
+          "type": "resnet50",
+          "enabled": true,
+          "train_params": {
+            "batch_size": 48,
+            "shuffle": true,
+            "drop_last": true,
+            "num_workers": 4,
+            "pin_memory": true
+          },
+          "valid_params": {
+            "batch_size": 48,
+            "num_workers": 2,
+            "pin_memory": true
+          }
+        },
+        {
+          "type": "resnet101",
+          "enabled": false
+        },
+        {
+          "type": "vgg16",
+          "enabled": false
+        },
+        {
+          "type": "vgg19",
+          "enabled": false
+        },
+        {
+          "type": "efficientnet-b2b",
+          "enabled": false
+        }
+      ]
+    }
+  }
+}
