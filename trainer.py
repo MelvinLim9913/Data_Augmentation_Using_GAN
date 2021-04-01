@@ -163,6 +163,7 @@ class Classifier:
     def create_dataloader(self):
         parameter_details = utils.get_classifier_train_or_valid_params_by_type(self.configs, self.__cnn_model_type)
         train_params = parameter_details.get("train_params")
+        print(train_params)
         valid_params = parameter_details.get("valid_params")
         train_dl = DataLoader(self.train_ds, **train_params)
         valid_dl = DataLoader(self.valid_ds, **valid_params)
