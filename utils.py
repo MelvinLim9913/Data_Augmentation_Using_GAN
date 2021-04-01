@@ -3,7 +3,7 @@ import pathlib
 import json
 
 # Instantiate logger using module name and set level to INFO.
-logger = logging.getLogger("gan")
+logger = logging.getLogger("cnn")
 logger.setLevel(logging.INFO)
 # Instantiate streamhandler (which outputs to sys.stderr by default) and set level to INFO.
 ch = logging.StreamHandler()
@@ -31,7 +31,7 @@ logger.addHandler(fh)
 logger.propagate = False
 
 # Use child logger.
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("cnn." + __name__)
 
 
 def get_classifier_model_type(configs):

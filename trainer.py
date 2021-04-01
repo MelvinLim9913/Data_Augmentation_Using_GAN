@@ -16,7 +16,7 @@ import utils
 from emotiondataset import EmotionDataset
 from cnn_model import CNNModel
 
-logger = logging.getLogger("nlp." + __name__)
+logger = logging.getLogger("cnn." + __name__)
 
 class Classifier:
 
@@ -44,7 +44,6 @@ class Classifier:
         self.train_path = image_file_path[self.dataset]["train"]
         self.valid_path = image_file_path[self.dataset]["valid"]
         self.test_path = image_file_path[self.dataset]["test"]
-        print(self.train_path)
 
         train_img_list = list()
         train_label_list = list()
@@ -80,7 +79,6 @@ class Classifier:
             valid_img,
             valid_label,
             transform=img_transform)
-        print(f"Train ds: {self.train_ds}")
 
     def initialise_excel_workbook(self):
         with pandas.ExcelWriter(f'{self.__cnn_model_type}_{self.dataset}_Classification_Report.xlsx', engine='openpyxl',
@@ -163,7 +161,6 @@ class Classifier:
     def create_dataloader(self):
         parameter_details = utils.get_classifier_train_or_valid_params_by_type(self.configs, self.__cnn_model_type)
         train_params = parameter_details.get("train_params")
-        print(train_params)
         valid_params = parameter_details.get("valid_params")
         train_dl = DataLoader(self.train_ds, **train_params)
         valid_dl = DataLoader(self.valid_ds, **valid_params)
