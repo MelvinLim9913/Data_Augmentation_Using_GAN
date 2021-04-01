@@ -61,6 +61,7 @@ class Classifier:
             valid_img_list.extend(new_images)
             for _ in range(len(new_images)):
                 valid_label_list.append(class_number)
+        print(f"Train Image List: {train_img_list}")
 
         return train_img_list, train_label_list, valid_img_list, valid_label_list
 
