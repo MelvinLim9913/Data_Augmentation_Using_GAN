@@ -118,7 +118,7 @@ class Classifier:
         ave_train_loss = utils.average(train_loss)
         ave_train_acc = utils.average(train_acc)
 
-        with open(f'{args.classifier}_{args.dataset}_Log_File.txt', "a") as f:
+        with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
             f.write(f'\tTrain Loss: {ave_train_loss:.3f} | Train Acc: {ave_train_acc:.2f}%\n')
 
         return train_acc, train_loss
@@ -150,7 +150,7 @@ class Classifier:
         ave_val_loss = utils.average(val_loss)
         ave_val_acc = utils.average(val_acc)
 
-        with open(f'{args.classifier}_{args.dataset}_Log_File.txt', "a") as f:
+        with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
             f.write(f'\t Val. Loss: {ave_val_loss:.3f}   |  Val. Acc: {ave_val_acc * 100:.2f}%\n')
 
         return val_acc, val_loss, ground_truths, predictions
@@ -179,7 +179,7 @@ class Classifier:
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
             f.write("Model is FREEZE\n")
         for epoch in range(num_epoch):
-            with open(f'{args.classifier}_{args.dataset}_Log_File.txt', "a") as f:
+            with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
                 f.write(f"\nEPOCH {epoch + 1} of Cycle{simulation_idx + 1}\n")
             self.train_model(model, optimizer, train_dl)
             self.validate_model(model, valid_dl)
@@ -193,8 +193,8 @@ class Classifier:
         optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=2e-7)
         optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, len(train_dl), T_mult=len(train_dl) * num_epoch)
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
-            f.write(f"Classifier: {args.classifier}\n")
-            f.write(f"Dataset used: {args.dataset}\n\n")
+            f.write(f"Classifier: {self.__cnn_model_type}\n")
+            f.write(f"Dataset used: {dataset}\n\n")
             f.write("Model is UNFREEZE\n")
         for epoch in range(num_epoch):
             with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
