@@ -44,6 +44,7 @@ class Classifier:
         self.train_path = image_file_path[self.dataset]["train"]
         self.valid_path = image_file_path[self.dataset]["valid"]
         self.test_path = image_file_path[self.dataset]["test"]
+        print(self.train_path)
 
         train_img_list = list()
         train_label_list = list()
@@ -61,7 +62,6 @@ class Classifier:
             valid_img_list.extend(new_images)
             for _ in range(len(new_images)):
                 valid_label_list.append(class_number)
-        print(f"Train Image List: {train_img_list}")
 
         return train_img_list, train_label_list, valid_img_list, valid_label_list
 

@@ -1,7 +1,7 @@
 {
   "image_file_path": {
     "original": {
-      "train": "dataset/original/train",
+      "train": ["dataset/original/train"],
       "valid": "dataset/original/valid",
       "test" : "dataset/original/test"
     },
