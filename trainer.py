@@ -39,6 +39,7 @@ class Classifier:
         self.logger.info(f"Model used for training: {self.__cnn_model_type}")
         self.criterion = nn.CrossEntropyLoss()
         self.weight_dir = f"weights/{self.__cnn_model_type}/{dataset}/"
+        os.makedirs(self.weight_dir, exist_ok=True)
 
     def read_data_from_path(self):
         image_file_path = self.configs.get("image_file_path", "")
