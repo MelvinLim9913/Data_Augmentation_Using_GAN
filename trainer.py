@@ -16,12 +16,13 @@ import utils
 from emotiondataset import EmotionDataset
 from cnn_model import CNNModel
 
+logger = logging.getLogger("nlp." + __name__)
 
 class Classifier:
 
     def __init__(self):
         # Child logger
-        self.logger = logging.getLogger(__name__)
+        self.logger = logging.getLogger("cnn." + __name__)
         self.weight_dir = None
         self.graph_dir = None
         self.train_path = None
@@ -228,22 +229,22 @@ if __name__ == "__main__":
     args = parser.parse_args()
     dataset = args.dataset
 
-    cnn_classifer = Classifier()
-    cnn_classifer.load_and_transform_data()
-    cnn_classifer.initialise_excel_workbook()
-    cnn_classifer.write_model_type_used_and_dataset_used_to_text()
+    cnn_classifier = Classifier()
+    cnn_classifier.load_and_transform_data()
+    cnn_classifier.initialise_excel_workbook()
+    cnn_classifier.write_model_type_used_and_dataset_used_to_text()
 
-    train_dataloader, valid_dataloader = cnn_classifer.create_dataloader()
+    train_dataloader, valid_dataloader = cnn_classifier.create_dataloader()
 
     for i in range(5):
-        cnn_classifer.train_with_backbone_freeze(
+        cnn_classifier.train_with_backbone_freeze(
             num_epoch=3,
             train_dl=train_dataloader,
             valid_dl=valid_dataloader,
             simulation_idx=i
         )
 
-        cnn_classifer.train_with_backbone_unfreeze(
+        cnn_classifier.train_with_backbone_unfreeze(
             num_epoch=40,
             train_dl=train_dataloader,
             valid_dl=valid_dataloader,
