@@ -2,7 +2,7 @@
   "image_file_path": {
     "original": {
       "train": ["dataset/original/train"],
-      "valid": "dataset/original/valid",
+      "valid": "dataset/original/val",
       "test" : "dataset/original/test"
     },
     "esrgan": {

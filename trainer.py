@@ -18,6 +18,7 @@ from cnn_model import CNNModel
 
 logger = logging.getLogger("cnn." + __name__)
 
+
 class Classifier:
 
     def __init__(self):
@@ -61,6 +62,8 @@ class Classifier:
             valid_img_list.extend(new_images)
             for _ in range(len(new_images)):
                 valid_label_list.append(class_number)
+
+        self.logger.info(f"Valid_img_list: {valid_img_list}")
 
         return train_img_list, train_label_list, valid_img_list, valid_label_list
 
@@ -173,6 +176,7 @@ class Classifier:
         learning_rate = 1e-3
         optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=1e-5)
         optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, len(train_dl), T_mult=num_epoch*len(train_dl))
+        self.logger.info("Starting to train model with backbone freeze.")
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
             f.write("Model is FREEZE\n")
         for epoch in range(num_epoch):
@@ -189,6 +193,7 @@ class Classifier:
         learning_rate = 5e-5
         optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=2e-7)
         optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, len(train_dl), T_mult=len(train_dl) * num_epoch)
+        self.logger.info("Unfreeze the backbone and train with ")
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
             f.write(f"Classifier: {self.__cnn_model_type}\n")
             f.write(f"Dataset used: {dataset}\n\n")
