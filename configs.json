@@ -24,7 +24,7 @@
           "type": "resnet50",
           "enabled": true,
           "train_params": {
-            "batch_size": 48,
+            "batch_size": 64,
             "shuffle": true,
             "drop_last": true,
             "num_workers": 4,
@@ -38,19 +38,67 @@
         },
         {
           "type": "resnet101",
-          "enabled": false
+          "enabled": false,
+          "train_params": {
+            "batch_size": 64,
+            "shuffle": true,
+            "drop_last": true,
+            "num_workers": 4,
+            "pin_memory": true
+          },
+          "valid_params": {
+            "batch_size": 48,
+            "num_workers": 4,
+            "pin_memory": true
+          }
         },
         {
           "type": "vgg16",
-          "enabled": false
+          "enabled": false,
+          "train_params": {
+            "batch_size": 64,
+            "shuffle": true,
+            "drop_last": true,
+            "num_workers": 4,
+            "pin_memory": true
+          },
+          "valid_params": {
+            "batch_size": 48,
+            "num_workers": 4,
+            "pin_memory": true
+          }
         },
         {
           "type": "vgg19",
-          "enabled": false
+          "enabled": false,
+          "train_params": {
+            "batch_size": 64,
+            "shuffle": true,
+            "drop_last": true,
+            "num_workers": 4,
+            "pin_memory": true
+          },
+          "valid_params": {
+            "batch_size": 48,
+            "num_workers": 4,
+            "pin_memory": true
+          }
         },
         {
           "type": "efficientnet-b2b",
-          "enabled": false
+          "enabled": false,
+          "train_params": {
+            "batch_size": 64,
+            "shuffle": true,
+            "drop_last": true,
+            "num_workers": 4,
+            "pin_memory": true
+          },
+          "valid_params": {
+            "batch_size": 48,
+            "num_workers": 4,
+            "pin_memory": true
+          }
         }
       ]
     }

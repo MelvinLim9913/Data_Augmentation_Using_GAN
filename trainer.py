@@ -63,8 +63,6 @@ class Classifier:
             for _ in range(len(new_images)):
                 valid_label_list.append(class_number)
 
-        self.logger.info(f"Valid_img_list: {valid_img_list}")
-
         return train_img_list, train_label_list, valid_img_list, valid_label_list
 
     def load_and_transform_data(self):
@@ -122,7 +120,7 @@ class Classifier:
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
             f.write(f'\tTrain Loss: {ave_train_loss:.3f} | Train Acc: {ave_train_acc:.2f}%\n')
 
-        return train_acc, train_loss
+        return ave_train_acc, ave_train_loss
 
     def validate_model(self, model, valid_dl):
         val_acc = []
@@ -154,7 +152,7 @@ class Classifier:
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
             f.write(f'\t Val. Loss: {ave_val_loss:.3f}   |  Val. Acc: {ave_val_acc * 100:.2f}%\n')
 
-        return val_acc, val_loss, ground_truths, predictions
+        return ave_val_acc, ave_val_loss, ground_truths, predictions
 
     def write_model_type_used_and_dataset_used_to_text(self):
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "w") as f:
@@ -193,7 +191,7 @@ class Classifier:
         learning_rate = 5e-5
         optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=2e-7)
         optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, len(train_dl), T_mult=len(train_dl) * num_epoch)
-        self.logger.info("Unfreeze the backbone and train with ")
+        self.logger.info(f"Unfreeze the backbone and train with {num_epoch} epoch.")
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
             f.write(f"Classifier: {self.__cnn_model_type}\n")
             f.write(f"Dataset used: {dataset}\n\n")
@@ -201,14 +199,18 @@ class Classifier:
         for epoch in range(num_epoch):
             with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
                 f.write(f"\nEPOCH {epoch+1} of Cycle{simulation_idx + 1}\n")
-            self.logger.info(f"Cycle-{epoch + 1}\tEPOCH--{epoch+1}")
-            train_acc, _ = self.train_model(model, optimizer, train_dl)
-            _, _, ground_truths, predictions = self.validate_model(model, valid_dl)
+            self.logger.info(f"Cycle-{simulation_idx+ 1}\tEPOCH--{epoch+1}")
+            ave_train_acc, ave_train_loss = self.train_model(model, optimizer, train_dl)
+            ave_valid_acc, ave_valid_loss, ground_truths, predictions = self.validate_model(model, valid_dl)
 
-            if train_acc > highest_acc:
-                highest_acc = train_acc
+            print(f'\tTrain Loss: {ave_train_loss:.3f} | Train Acc: {ave_train_acc:.2f}%')
+            print(f'\t Val. Loss: {ave_valid_loss:.3f} |  Val. Acc: {ave_valid_acc*100:.2f}%')
+
+            if ave_train_acc > highest_acc:
+                highest_acc = ave_train_acc
                 torch.save(model.state_dict(), os.path.join(
                     self.weight_dir, "weights_cycle{}.pth".format(simulation_idx + 1)))
+                self.logger.info(f"")
 
         self.write_classification_report(ground_truths, predictions, simulation_idx)
 
