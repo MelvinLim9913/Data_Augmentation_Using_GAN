@@ -79,8 +79,7 @@ class Classifier:
             valid_img,
             valid_label,
             transform=img_transform)
-
-        return self.train_ds, self.valid_ds
+        print(f"Train ds: {self.train_ds}")
 
     def initialise_excel_workbook(self):
         with pandas.ExcelWriter(f'{self.__cnn_model_type}_{self.dataset}_Classification_Report.xlsx', engine='openpyxl',
