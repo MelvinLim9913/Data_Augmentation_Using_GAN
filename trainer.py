@@ -9,7 +9,7 @@ import os
 import tqdm
 from torchvision import transforms
 from torch.utils.data import DataLoader
-from sklearn.metrics import accuracy_score, classification_report
+from sklearn.metrics import classification_report
 
 # Self made modules
 import utils
@@ -124,9 +124,8 @@ class Classifier:
         return ave_train_acc, ave_train_loss
 
     def validate_model(self, model, valid_dl):
-        val_acc = []
-        val_loss = []
         running_loss = []
+        running_corrects = []
         model.eval()
 
         ground_truths = []
@@ -139,16 +138,12 @@ class Classifier:
                 logits = model(img)
                 loss = self.criterion(logits, label)
                 prediction = torch.max(logits, dim=1)
-                predictions.append(prediction)
-                ground_truths.append(label)
-                running_loss.append(loss.item() * img.size(0))
-        valid_loss = sum(running_loss) / len(running_loss)
-        val_loss.append(valid_loss)
-        acc = accuracy_score(ground_truths, predictions)
-        val_acc.append(acc)
 
-        ave_val_loss = utils.average(val_loss)
-        ave_val_acc = utils.average(val_acc)
+            running_loss.append(loss.item() * img.size(0))
+            running_corrects.append(torch.sum(prediction == label.data))
+
+        ave_val_loss = sum(running_loss) / len(running_loss)
+        ave_val_acc = float(sum(running_corrects)) / len(running_corrects)
 
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
             f.write(f'\t Val. Loss: {ave_val_loss:.3f}   |  Val. Acc: {ave_val_acc * 100:.2f}%\n')
