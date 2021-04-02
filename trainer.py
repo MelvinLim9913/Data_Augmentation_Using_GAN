@@ -127,9 +127,8 @@ class Classifier:
         running_loss = []
         running_corrects = []
         model.eval()
-
-        ground_truths = []
-        predictions = []
+        valid_loss = []
+        valid_acc = []
 
         for img, label in tqdm.tqdm(valid_dl):
             img = img.to(self.device)
@@ -142,13 +141,19 @@ class Classifier:
             running_loss.append(loss.item() * img.size(0))
             running_corrects.append(torch.sum(prediction == label.data))
 
-        ave_val_loss = sum(running_loss) / len(running_loss)
-        ave_val_acc = float(sum(running_corrects)) / len(running_corrects)
+        epoch_loss = sum(running_loss) / len(running_loss)
+        epoch_acc = float(sum(running_corrects)) / len(running_corrects)
+
+        valid_loss.append(epoch_loss)
+        valid_acc.append(epoch_acc)
+
+        ave_val_loss = utils.average(valid_loss)
+        ave_val_acc = utils.average(valid_acc)
 
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
             f.write(f'\t Val. Loss: {ave_val_loss:.3f}   |  Val. Acc: {ave_val_acc * 100:.2f}%\n')
 
-        return ave_val_acc, ave_val_loss, ground_truths, predictions
+        return ave_val_acc, ave_val_loss
 
     def write_model_type_used_and_dataset_used_to_text(self):
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "w") as f:
@@ -197,7 +202,7 @@ class Classifier:
                 f.write(f"\nEPOCH {epoch+1} of Cycle{simulation_idx + 1}\n")
             self.logger.info(f"Cycle-{simulation_idx+ 1}\tEPOCH--{epoch+1}")
             ave_train_acc, ave_train_loss = self.train_model(model, optimizer, train_dl)
-            ave_valid_acc, ave_valid_loss, ground_truths, predictions = self.validate_model(model, valid_dl)
+            ave_valid_acc, ave_valid_loss= self.validate_model(model, valid_dl)
 
             print(f'\tTrain Loss: {ave_train_loss:.3f} | Train Acc: {ave_train_acc:.2f}%')
             print(f'\t Val. Loss: {ave_valid_loss:.3f} |  Val. Acc: {ave_valid_acc*100:.2f}%')
@@ -207,8 +212,6 @@ class Classifier:
                 torch.save(model.state_dict(), os.path.join(
                     self.weight_dir, "weights_cycle{}.pth".format(simulation_idx + 1)))
                 self.logger.info(f"")
-
-        self.write_classification_report(ground_truths, predictions, simulation_idx)
 
     def write_classification_report(self, ground_truths, predictions, simulation_idx):
         report = classification_report(ground_truths, predictions, output_dict=True)
