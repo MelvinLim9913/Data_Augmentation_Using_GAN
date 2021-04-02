@@ -137,7 +137,7 @@ class Classifier:
             with torch.no_grad():
                 logits = model(img)
                 loss = self.criterion(logits, label)
-                prediction = torch.max(logits, dim=1)
+                _, prediction = torch.max(logits, dim=1)
 
             running_loss.append(loss.item() * img.size(0))
             running_corrects.append(torch.sum(prediction == label.data))
