@@ -90,8 +90,6 @@ class Classifier:
             writer.save()
 
     def train_model(self, model, optimizer, train_dl):
-        train_loss = []
-        train_acc = []
         running_loss = []
         running_corrects = []
         model.train()
@@ -109,14 +107,8 @@ class Classifier:
             running_loss.append(loss.item() * img.size(0))
             running_corrects.append(torch.sum(preds == label.data))
 
-        epoch_loss = sum(running_loss) / len(running_loss)
-        epoch_acc = float(sum(running_corrects)) / len(running_corrects)
-
-        train_loss.append(epoch_loss)
-        train_acc.append(epoch_acc)
-
-        ave_train_loss = utils.average(train_loss)
-        ave_train_acc = utils.average(train_acc)
+        ave_train_loss = sum(running_loss) / len(running_loss)
+        ave_train_acc = float(sum(running_corrects)) / len(running_corrects)
 
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
             f.write(f'\tTrain Loss: {ave_train_loss:.3f} | Train Acc: {ave_train_acc:.2f}%\n')
@@ -127,8 +119,6 @@ class Classifier:
         running_loss = []
         running_corrects = []
         model.eval()
-        valid_loss = []
-        valid_acc = []
 
         for img, label in tqdm.tqdm(valid_dl):
             img = img.to(self.device)
@@ -141,17 +131,11 @@ class Classifier:
             running_loss.append(loss.item() * img.size(0))
             running_corrects.append(torch.sum(prediction == label.data))
 
-        epoch_loss = sum(running_loss) / len(running_loss)
-        epoch_acc = float(sum(running_corrects)) / len(running_corrects)
-
-        valid_loss.append(epoch_loss)
-        valid_acc.append(epoch_acc)
-
-        ave_val_loss = utils.average(valid_loss)
-        ave_val_acc = utils.average(valid_acc)
+        ave_val_loss = sum(running_loss) / len(running_loss)
+        ave_val_acc = float(sum(running_corrects)) / len(running_corrects)
 
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
-            f.write(f'\t Val. Loss: {ave_val_loss:.3f}   |  Val. Acc: {ave_val_acc * 100:.2f}%\n')
+            f.write(f'\t Val. Loss: {ave_val_loss:.3f}   |  Val. Acc: {ave_val_acc:.2f}%\n')
 
         return ave_val_acc, ave_val_loss
 
@@ -202,10 +186,10 @@ class Classifier:
                 f.write(f"\nEPOCH {epoch+1} of Cycle{simulation_idx + 1}\n")
             self.logger.info(f"Cycle-{simulation_idx+ 1}\tEPOCH--{epoch+1}")
             ave_train_acc, ave_train_loss = self.train_model(model, optimizer, train_dl)
-            ave_valid_acc, ave_valid_loss= self.validate_model(model, valid_dl)
+            ave_valid_acc, ave_valid_loss = self.validate_model(model, valid_dl)
 
-            print(f'\tTrain Loss: {ave_train_loss:.3f} | Train Acc: {ave_train_acc:.2f}%')
-            print(f'\t Val. Loss: {ave_valid_loss:.3f} |  Val. Acc: {ave_valid_acc*100:.2f}%')
+            self.logger.info(f'\tTrain Loss: {ave_train_loss:.3f} | Train Acc: {ave_train_acc:.2f}%')
+            self.logger.info(f'\t Val. Loss: {ave_valid_loss:.3f} |  Val. Acc: {ave_valid_acc:.2f}%')
 
             if ave_train_acc > highest_acc:
                 highest_acc = ave_train_acc
@@ -249,7 +233,7 @@ if __name__ == "__main__":
         )
 
         cnn_classifier.train_with_backbone_unfreeze(
-            num_epoch=40,
+            num_epoch=30,
             train_dl=train_dataloader,
             valid_dl=valid_dataloader,
             simulation_idx=i
