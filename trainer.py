@@ -138,9 +138,9 @@ class Classifier:
             with torch.no_grad():
                 logits = model(img)
                 loss = self.criterion(logits, label)
-                prediction = torch.argmax(logits, dim=1)
-                predictions.extend(prediction.tolist())
-                ground_truths.extend(label.tolist())
+                prediction = torch.max(logits, dim=1)
+                predictions.append(prediction)
+                ground_truths.append(label)
                 running_loss.append(loss.item() * img.size(0))
         valid_loss = sum(running_loss) / len(running_loss)
         val_loss.append(valid_loss)
