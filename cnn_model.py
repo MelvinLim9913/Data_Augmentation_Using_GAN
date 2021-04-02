@@ -10,14 +10,13 @@ class CNNModel(nn.Module):
         # remove last layer of fc
         self.backbone = pretrained.features
         self.output = pretrained.output
-        self.dropout1 = nn.Dropout(0.4)
+        # self.dropout1 = nn.Dropout(0.4)
         self.classifier = nn.Linear(1000, 7)
 
         del pretrained
 
     def forward(self, x):
         x = self.backbone(x)
-        x = self.dropout1(x)
         x = x.reshape(x.size(0), -1)
         x = self.output(x)
         x = self.classifier(x)
@@ -33,4 +32,3 @@ class CNNModel(nn.Module):
         """Freeze the backbone network weight"""
         for p in self.backbone.parameters():
             p.requires_grad = True
-
