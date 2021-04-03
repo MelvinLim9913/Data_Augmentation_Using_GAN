@@ -21,7 +21,7 @@ class CNNModel(nn.Module):
         x = x.reshape(x.size(0), -1)
         x = self.output(x)
         x = self.classifier(x)
-
+        print(x)
         return x
 
     def freeze_backbone(self):
@@ -121,3 +121,7 @@ class CnnModel(nn.Module):
 
     def forward(self):
         return self.model_ft, self.input_size
+
+
+if __name__ == "__main__":
+    CNNModel("resnet50")

@@ -154,7 +154,6 @@ class Classifier:
 
     def train_with_backbone_freeze(self, num_epoch, train_dl, valid_dl, simulation_idx):
         model = CNNModel(self.__cnn_model_type)
-        model = model.forward(model)
         model.freeze_backbone()
         model.to(self.device)
         learning_rate = 1e-3
@@ -172,7 +171,6 @@ class Classifier:
     def train_with_backbone_unfreeze(self, num_epoch, train_dl, valid_dl, simulation_idx):
         highest_acc = 0
         model = CNNModel(self.__cnn_model_type)
-        model = model.forward(model)
         model.unfreeze_backbone()
         model.to(self.device)
         learning_rate = 5e-5
