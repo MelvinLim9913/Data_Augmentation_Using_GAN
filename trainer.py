@@ -158,7 +158,7 @@ class Classifier:
         model.to(self.device)
         learning_rate = 1e-3
         optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=1e-5)
-        optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, len(train_dl), T_mult=num_epoch*len(train_dl))
+        # optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, len(train_dl), T_mult=num_epoch*len(train_dl))
         self.logger.info("Starting to train model with backbone freeze.")
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
             f.write("Model is FREEZE\n")
@@ -175,7 +175,7 @@ class Classifier:
         model.to(self.device)
         learning_rate = 5e-5
         optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=2e-7)
-        optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, len(train_dl), T_mult=len(train_dl) * num_epoch)
+        # optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, len(train_dl), T_mult=len(train_dl) * num_epoch)
         self.logger.info(f"Unfreeze the backbone and train with {num_epoch} epoch.")
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
             f.write(f"Classifier: {self.__cnn_model_type}\n")
