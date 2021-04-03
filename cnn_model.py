@@ -40,9 +40,8 @@ def set_parameter_requires_grad(model, feature_extracting):
             param.requires_grad = False
 
 
-class CnnModel(nn.Module):
+class CnnModel:
     def __init__(self, model_name, num_classes=7, feature_extract=None, use_pretrained=True):
-        super(CnnModel, self).__init__()
         self.model_ft = None
         self.input_size = 0
         if model_name == "resnet18":
