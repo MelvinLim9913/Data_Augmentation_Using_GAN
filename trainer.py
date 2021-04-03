@@ -153,8 +153,8 @@ class Classifier:
         return train_dl, valid_dl
 
     def train_with_backbone_freeze(self, num_epoch, train_dl, valid_dl, simulation_idx):
-        model = CnnModel(self.__cnn_model_type)
-        model.freeze_backbone()
+        model = CnnModel(self.__cnn_model_type, num_classes=7, feature_extract=True, use_pretrained=True)
+        # model.freeze_backbone()
         model.to(self.device)
         learning_rate = 1e-3
         optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=1e-5)
@@ -170,8 +170,8 @@ class Classifier:
 
     def train_with_backbone_unfreeze(self, num_epoch, train_dl, valid_dl, simulation_idx):
         highest_acc = 0
-        model = CnnModel(self.__cnn_model_type)
-        model.unfreeze_backbone()
+        model = CnnModel(self.__cnn_model_type, num_classes=7, feature_extract=False, use_pretrained=True)
+        # model.unfreeze_backbone()
         model.to(self.device)
         learning_rate = 5e-5
         optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=2e-7)
