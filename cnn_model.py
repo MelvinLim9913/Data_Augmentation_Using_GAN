@@ -119,9 +119,4 @@ class CnnModel(nn.Module):
             exit()
 
     def forward(self):
-        return self.model_ft, self.input_size
-
-
-if __name__ == "__main__":
-    modell = CNNModel("resnet50")
-    print(modell)
+        return self.model_ft
