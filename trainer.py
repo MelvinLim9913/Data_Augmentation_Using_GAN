@@ -14,7 +14,7 @@ from sklearn.metrics import classification_report
 # Self made modules
 import utils
 from emotiondataset import EmotionDataset
-from cnn_model import CnnModel
+from cnn_model import initialize_model
 
 logger = logging.getLogger("cnn." + __name__)
 
@@ -153,7 +153,7 @@ class Classifier:
         return train_dl, valid_dl
 
     def train_with_backbone_freeze(self, num_epoch, train_dl, valid_dl, simulation_idx):
-        model = CnnModel(self.__cnn_model_type, num_classes=7, feature_extract=True, use_pretrained=True)
+        model = initialize_model(self.__cnn_model_type, num_classes=7, feature_extract=True, use_pretrained=True)
         # model.freeze_backbone()
         model.to(self.device)
         learning_rate = 1e-3
@@ -170,7 +170,7 @@ class Classifier:
 
     def train_with_backbone_unfreeze(self, num_epoch, train_dl, valid_dl, simulation_idx):
         highest_acc = 0
-        model = CnnModel(self.__cnn_model_type, num_classes=7, feature_extract=False, use_pretrained=True)
+        model = initialize_model(self.__cnn_model_type, num_classes=7, feature_extract=False, use_pretrained=True)
         # model.unfreeze_backbone()
         model.to(self.device)
         learning_rate = 5e-5
