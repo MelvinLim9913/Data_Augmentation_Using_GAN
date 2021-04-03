@@ -153,11 +153,11 @@ class Classifier:
         return train_dl, valid_dl
 
     def train_with_backbone_freeze(self, num_epoch, train_dl, valid_dl, simulation_idx):
-        model = CNNModel(self.__cnn_model_type)
-        model.freeze_backbone()
-        model.to(self.device)
+        baseline_model = CNNModel(self.__cnn_model_type)
+        baseline_model.freeze_backbone()
+        baseline_model.to(self.device)
         learning_rate = 1e-3
-        optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=1e-5)
+        optimizer = optim.Adam(baseline_model.parameters(), lr=learning_rate, weight_decay=1e-5)
         # optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, len(train_dl), T_mult=num_epoch*len(train_dl))
         self.logger.info("Starting to train model with backbone freeze.")
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
@@ -165,8 +165,8 @@ class Classifier:
         for epoch in range(num_epoch):
             with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
                 f.write(f"\nEPOCH {epoch + 1} of Cycle{simulation_idx + 1}\n")
-            self.train_model(model, optimizer, train_dl)
-            self.validate_model(model, valid_dl)
+            self.train_model(baseline_model, optimizer, train_dl)
+            self.validate_model(baseline_model, valid_dl)
 
     def train_with_backbone_unfreeze(self, num_epoch, train_dl, valid_dl, simulation_idx):
         highest_acc = 0
