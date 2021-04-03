@@ -41,39 +41,11 @@ class Classifier:
         self.weight_dir = f"weights/{self.__cnn_model_type}/{dataset}/"
         os.makedirs(self.weight_dir, exist_ok=True)
 
-    # def read_data_from_path(self):
-    #     image_file_path = self.configs.get("image_file_path", "")
-    #     self.train_path = image_file_path[self.dataset]["train"]
-    #     self.valid_path = image_file_path[self.dataset]["valid"]
-    #     self.test_path = image_file_path[self.dataset]["test"]
-    #
-    #     train_img_list = list()
-    #     train_label_list = list()
-    #     for train in self.train_path:
-    #         for class_number in range(7):
-    #             new_images = glob.glob(os.path.join(train, str(class_number), '*.png'))
-    #             train_img_list.extend(new_images)
-    #             for _ in range(len(new_images)):
-    #                 train_label_list.append(class_number)
-    #
-    #     valid_img_list = list()
-    #     valid_label_list = list()
-    #     for class_number in range(7):
-    #         new_images = glob.glob(os.path.join(self.valid_path, str(class_number), '*.png'))
-    #         valid_img_list.extend(new_images)
-    #         for _ in range(len(new_images)):
-    #             valid_label_list.append(class_number)
-    #
-    #     return train_img_list, train_label_list, valid_img_list, valid_label_list
-
     def read_data_from_path(self):
         image_file_path = self.configs.get("image_file_path", "")
         self.train_path = image_file_path[self.dataset]["train"]
         self.valid_path = image_file_path[self.dataset]["valid"]
         self.test_path = image_file_path[self.dataset]["test"]
-
-        print('train_path:', self.train_path)
-        print('valid_path:', self.valid_path)
 
         train_img_list = list()
         train_label_list = list()
@@ -88,8 +60,6 @@ class Classifier:
         valid_label_list = list()
         for class_number in range(7):
             new_images = glob.glob(os.path.join(self.valid_path, str(class_number), '*.png'))
-            print('debug')
-            print('new_images:', new_images, 'length:', len(new_images), 'type:', type(new_images))
             valid_img_list.extend(new_images)
             for _ in range(len(new_images)):
                 valid_label_list.append(class_number)
@@ -184,6 +154,7 @@ class Classifier:
 
     def train_with_backbone_freeze(self, num_epoch, train_dl, valid_dl, simulation_idx):
         model = CNNModel(self.__cnn_model_type)
+        model = model.forward(model)
         model.freeze_backbone()
         model.to(self.device)
         learning_rate = 1e-3
@@ -201,6 +172,7 @@ class Classifier:
     def train_with_backbone_unfreeze(self, num_epoch, train_dl, valid_dl, simulation_idx):
         highest_acc = 0
         model = CNNModel(self.__cnn_model_type)
+        model = model.forward(model)
         model.unfreeze_backbone()
         model.to(self.device)
         learning_rate = 5e-5
