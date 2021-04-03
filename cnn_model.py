@@ -48,10 +48,10 @@ class CnnModel(nn.Module):
         if model_name == "resnet18":
             """ Resnet18
             """
-            model_ft = models.resnet18(pretrained=use_pretrained)
-            set_parameter_requires_grad(model_ft, feature_extract)
-            num_ftrs = model_ft.fc.in_features
-            model_ft.fc = nn.Linear(num_ftrs, num_classes)
+            self.model_ft = models.resnet18(pretrained=use_pretrained)
+            set_parameter_requires_grad(self.model_ft, feature_extract)
+            num_ftrs = self.model_ft.fc.in_features
+            self.model_ft.fc = nn.Linear(num_ftrs, num_classes)
             self.input_size = 224
 
         elif model_name == "resnet50":
