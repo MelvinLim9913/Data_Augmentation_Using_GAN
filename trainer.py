@@ -37,7 +37,7 @@ class Classifier:
         # Model
         self.__cnn_model_type = utils.get_classifier_model_type(self.configs)
         self.logger.info(f"Model used for training: {self.__cnn_model_type}")
-        self.criterion = nn.CrossEntropyLoss()
+        self.criterion = nn.CrossEntropyLoss().to(self.device)
         self.weight_dir = f"weights/{self.__cnn_model_type}/{dataset}/"
         os.makedirs(self.weight_dir, exist_ok=True)
 
