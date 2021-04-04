@@ -117,7 +117,7 @@ class Classifier:
         return ave_train_acc, ave_train_loss
 
     def validate_model(self, model, valid_dl):
-        running_loss = []
+        running_loss = 0
         ground_truths = []
         predictions = []
         criterion = nn.CrossEntropyLoss().to(self.device)
@@ -134,10 +134,10 @@ class Classifier:
                 predictions.extend(prediction.tolist())
                 ground_truths.extend(label.to(torch.device('cpu')).tolist())
 
-            running_loss.append(loss.item() * img.size(0))
+            running_loss += (loss.item() * img.size(0))
             # running_corrects.append(torch.sum(prediction == label.data))
 
-        ave_val_loss = sum(running_loss) / len(running_loss)
+        ave_val_loss = running_loss / len(valid_dl)
         ave_val_acc = utils.val_accuracy(predictions, ground_truths)
 
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
