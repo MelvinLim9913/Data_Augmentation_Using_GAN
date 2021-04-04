@@ -22,7 +22,7 @@
       "models": [
         {
           "type": "resnet50",
-          "enabled": true,
+          "enabled": false,
           "train_params": {
             "batch_size": 64,
             "shuffle": true,
@@ -38,7 +38,7 @@
         },
         {
           "type": "resnet101",
-          "enabled": false,
+          "enabled": true,
           "train_params": {
             "batch_size": 64,
             "shuffle": true,
@@ -47,7 +47,7 @@
             "pin_memory": true
           },
           "valid_params": {
-            "batch_size": 48,
+            "batch_size": 64,
             "num_workers": 4,
             "pin_memory": true
           }

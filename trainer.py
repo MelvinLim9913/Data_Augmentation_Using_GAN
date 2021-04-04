@@ -122,8 +122,9 @@ class Classifier:
         model.eval()
 
         for img, label in tqdm.tqdm(valid_dl):
-            img = img.to(self.device)
-            label = label.to(self.device)
+            # img = img.to(self.device)
+            # label = label.to(self.device)
+
             with torch.no_grad():
                 logits = model(img)
                 loss = self.criterion(logits, label)
