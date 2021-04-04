@@ -24,7 +24,7 @@ class CNNModel(nn.Module):
 
     def forward(self, x):
         x = self.backbone(x)
-        # x = x.reshape(x.size(0), -1)
+        x = x.reshape(x.size(0), -1)
         # x = self.output(x)
         x = self.classifier(x)
         return x
