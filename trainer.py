@@ -175,7 +175,7 @@ class Classifier:
         # model = CNNModel(self.__cnn_model_type)
         model.unfreeze_backbone()
         # model.to(self.device)
-        learning_rate = 5e-5
+        learning_rate = 5e-4
         optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=2e-7)
         optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, len(train_dl), T_mult=len(train_dl) * num_epoch)
         self.logger.info(f"Unfreeze the backbone and train with {num_epoch} epoch.")
