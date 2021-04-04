@@ -101,4 +101,4 @@ def average(result):
 
 def val_accuracy(prediction, ground_truth):
     num_correct = (np.array(prediction) == np.array(ground_truth)).sum()
-    return num_correct / len(prediction)
+    return (num_correct / len(prediction)) * 100

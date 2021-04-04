@@ -37,7 +37,6 @@ class Classifier:
         # Model
         self.__cnn_model_type = utils.get_classifier_model_type(self.configs)
         self.logger.info(f"Model used for training: {self.__cnn_model_type}")
-        self.criterion = nn.CrossEntropyLoss().to(self.device)
         self.weight_dir = f"weights/{self.__cnn_model_type}/{dataset}/"
         os.makedirs(self.weight_dir, exist_ok=True)
 
@@ -92,6 +91,7 @@ class Classifier:
     def train_model(self, model, optimizer, train_dl):
         running_loss = []
         running_corrects = []
+        criterion = nn.CrossEntropyLoss().to(self.device)
         model.train()
 
         for img, label in tqdm.tqdm(train_dl):
@@ -100,7 +100,7 @@ class Classifier:
             optimizer.zero_grad()
             with torch.set_grad_enabled(True):
                 logits = model(img)
-                loss = self.criterion(logits, label)
+                loss = criterion(logits, label)
                 _, preds = torch.max(logits, 1)
                 loss.backward()
                 optimizer.step()
@@ -120,6 +120,7 @@ class Classifier:
         running_loss = []
         ground_truths = []
         predictions = []
+        criterion = nn.CrossEntropyLoss().to(self.device)
         model.eval()
 
         for img, label in tqdm.tqdm(valid_dl):
@@ -128,7 +129,7 @@ class Classifier:
 
             with torch.no_grad():
                 logits = model(img)
-                loss = self.criterion(logits, label)
+                loss = criterion(logits, label)
                 prediction = torch.argmax(logits, 1)
                 predictions.extend(prediction.tolist())
                 ground_truths.extend(label.to(torch.device('cpu')).tolist())
