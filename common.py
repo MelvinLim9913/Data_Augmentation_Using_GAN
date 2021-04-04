@@ -5,9 +5,9 @@ from torch.utils.data import Dataset
 
 image_directory_dict = {
     "baseline": {
-        "train": ["data/train"],
-        "val": "data/val",
-        "test": "data/test"
+        "train": ["data/original/train"],
+        "val": "data/original/val",
+        "test": "data/original/test"
     },
     "esrgan": {
         "train": ["data/esrgan/train"],
