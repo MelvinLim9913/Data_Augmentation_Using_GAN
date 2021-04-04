@@ -120,14 +120,16 @@ class Classifier:
         running_loss = []
         running_corrects = []
         model.eval()
+        model.to(torch.device('cpu'))
+        criterion = nn.CrossEntropyLoss()
 
         for img, label in tqdm.tqdm(valid_dl):
-            img = img.to(self.device)
+            # img = img.to(self.device)
             # label = label.to(self.device)
 
             with torch.no_grad():
                 logits = model(img)
-                loss = self.criterion(logits, label)
+                loss = criterion(logits, label)
                 _, prediction = torch.max(logits, 1)
 
             running_loss.append(loss.item() * img.size(0))
