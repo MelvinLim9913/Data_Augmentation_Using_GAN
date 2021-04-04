@@ -98,11 +98,12 @@ class Classifier:
             img = img.to(self.device)
             label = label.to(self.device)
             optimizer.zero_grad()
-            logits = model(img)
-            loss = self.criterion(logits, label)
-            _, preds = torch.max(logits, 1)
-            loss.backward()
-            optimizer.step()
+            with torch.set_grad_enabled(True):
+                logits = model(img)
+                loss = self.criterion(logits, label)
+                _, preds = torch.max(logits, 1)
+                loss.backward()
+                optimizer.step()
 
             running_loss.append(loss.item() * img.size(0))
             running_corrects.append(torch.sum(preds == label.data))
@@ -167,15 +168,16 @@ class Classifier:
                 f.write(f"\nEPOCH {epoch + 1} of Cycle{simulation_idx + 1}\n")
             self.train_model(baseline_model, optimizer, train_dl)
             self.validate_model(baseline_model, valid_dl)
+        return baseline_model
 
-    def train_with_backbone_unfreeze(self, num_epoch, train_dl, valid_dl, simulation_idx):
+    def train_with_backbone_unfreeze(self, model, num_epoch, train_dl, valid_dl, simulation_idx):
         highest_acc = 0
-        model = CNNModel(self.__cnn_model_type)
+        # model = CNNModel(self.__cnn_model_type)
         model.unfreeze_backbone()
-        model.to(self.device)
+        # model.to(self.device)
         learning_rate = 5e-5
         optimizer = optim.Adam(model.parameters(), lr=learning_rate, weight_decay=2e-7)
-        # optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, len(train_dl), T_mult=len(train_dl) * num_epoch)
+        optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, len(train_dl), T_mult=len(train_dl) * num_epoch)
         self.logger.info(f"Unfreeze the backbone and train with {num_epoch} epoch.")
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
             f.write(f"Classifier: {self.__cnn_model_type}\n")
@@ -225,7 +227,7 @@ if __name__ == "__main__":
     train_dataloader, valid_dataloader = cnn_classifier.create_dataloader()
 
     for i in range(5):
-        cnn_classifier.train_with_backbone_freeze(
+        train_model = cnn_classifier.train_with_backbone_freeze(
             num_epoch=3,
             train_dl=train_dataloader,
             valid_dl=valid_dataloader,
@@ -233,6 +235,7 @@ if __name__ == "__main__":
         )
 
         cnn_classifier.train_with_backbone_unfreeze(
+            model=train_model,
             num_epoch=30,
             train_dl=train_dataloader,
             valid_dl=valid_dataloader,
