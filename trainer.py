@@ -120,16 +120,14 @@ class Classifier:
         running_loss = []
         running_corrects = []
         model.eval()
-        model.to(torch.device('cpu'))
-        criterion = nn.CrossEntropyLoss()
 
         for img, label in tqdm.tqdm(valid_dl):
-            # img = img.to(self.device)
-            # label = label.to(self.device)
+            img = img.to(self.device)
+            label = label.to(self.device)
 
             with torch.no_grad():
                 logits = model(img)
-                loss = criterion(logits, label)
+                loss = self.criterion(logits, label)
                 _, prediction = torch.max(logits, 1)
 
             running_loss.append(loss.item() * img.size(0))
@@ -152,8 +150,8 @@ class Classifier:
         parameter_details = utils.get_classifier_train_or_valid_params_by_type(self.configs, self.__cnn_model_type)
         train_params = parameter_details.get("train_params")
         valid_params = parameter_details.get("valid_params")
-        train_dl = DataLoader(self.train_ds, **train_params)
-        valid_dl = DataLoader(self.valid_ds, **valid_params)
+        train_dl = DataLoader(self.train_ds, **train_params, shuffle=True, drop_last=True, pin_memory=True)
+        valid_dl = DataLoader(self.valid_ds, **valid_params,pin_memory=True)
         return train_dl, valid_dl
 
     def train_with_backbone_freeze(self, num_epoch, train_dl, valid_dl, simulation_idx):
@@ -162,7 +160,7 @@ class Classifier:
         baseline_model.to(self.device)
         learning_rate = 1e-3
         optimizer = optim.Adam(baseline_model.parameters(), lr=learning_rate, weight_decay=1e-5)
-        # optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, len(train_dl), T_mult=num_epoch*len(train_dl))
+        optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, len(train_dl), T_mult=num_epoch*len(train_dl))
         self.logger.info("Starting to train model with backbone freeze.")
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
             f.write("Model is FREEZE\n")
