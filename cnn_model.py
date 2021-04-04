@@ -1,14 +1,19 @@
 import torch.nn as nn
-from pytorchcv.model_provider import get_model
+# from pytorchcv.model_provider import get_model
 from torchvision import models
+
+model_dict = {
+    "resnet50": models.resnet50(pretrained=True)
+}
 
 
 class CNNModel(nn.Module):
     def __init__(self, model_name):
         super(CNNModel, self).__init__()
         # Load pretrained network as backbone
-        pretrained = get_model(model_name, pretrained=True)
+        pretrained = model_dict[model_name]
         # remove last layer of fc
+        # self.backbone = list(pretrained.children())[:-1]
         self.backbone = pretrained
         self.num_ftrs = pretrained.fc.in_features
         # self.output = pretrained.output
