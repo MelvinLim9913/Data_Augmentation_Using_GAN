@@ -118,7 +118,8 @@ class Classifier:
 
     def validate_model(self, model, valid_dl):
         running_loss = []
-        running_corrects = []
+        ground_truths = []
+        predictions = []
         model.eval()
 
         for img, label in tqdm.tqdm(valid_dl):
@@ -128,13 +129,15 @@ class Classifier:
             with torch.no_grad():
                 logits = model(img)
                 loss = self.criterion(logits, label)
-                _, prediction = torch.max(logits, 1)
+                prediction = torch.argmax(logits, 1)
+                predictions.extend(prediction.tolist())
+                ground_truths.extend(label.to(torch.device('cpu')).tolist())
 
             running_loss.append(loss.item() * img.size(0))
-            running_corrects.append(torch.sum(prediction == label.data))
+            # running_corrects.append(torch.sum(prediction == label.data))
 
         ave_val_loss = sum(running_loss) / len(running_loss)
-        ave_val_acc = float(sum(running_corrects)) / len(running_corrects)
+        ave_val_acc = utils.val_accuracy(predictions, ground_truths)
 
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
             f.write(f'\t Val. Loss: {ave_val_loss:.3f}   |  Val. Acc: {ave_val_acc:.2f}%\n')
@@ -151,7 +154,7 @@ class Classifier:
         train_params = parameter_details.get("train_params")
         valid_params = parameter_details.get("valid_params")
         train_dl = DataLoader(self.train_ds, **train_params, shuffle=True, drop_last=True, pin_memory=True)
-        valid_dl = DataLoader(self.valid_ds, **valid_params,pin_memory=True)
+        valid_dl = DataLoader(self.valid_ds, **valid_params, pin_memory=True)
         return train_dl, valid_dl
 
     def train_with_backbone_freeze(self, num_epoch, train_dl, valid_dl, simulation_idx):
@@ -160,7 +163,7 @@ class Classifier:
         baseline_model.to(self.device)
         learning_rate = 1e-3
         optimizer = optim.Adam(baseline_model.parameters(), lr=learning_rate, weight_decay=1e-5)
-        optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, len(train_dl), T_mult=num_epoch*len(train_dl))
+        optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, len(train_dl), T_mult=num_epoch * len(train_dl))
         self.logger.info("Starting to train model with backbone freeze.")
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
             f.write("Model is FREEZE\n")
@@ -186,8 +189,8 @@ class Classifier:
             f.write("Model is UNFREEZE\n")
         for epoch in range(num_epoch):
             with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
-                f.write(f"\nEPOCH {epoch+1} of Cycle{simulation_idx + 1}\n")
-            self.logger.info(f"Cycle-{simulation_idx+ 1}\tEPOCH--{epoch+1}")
+                f.write(f"\nEPOCH {epoch + 1} of Cycle{simulation_idx + 1}\n")
+            self.logger.info(f"Cycle-{simulation_idx + 1}\tEPOCH--{epoch + 1}")
             ave_train_acc, ave_train_loss = self.train_model(model, optimizer, train_dl)
             ave_valid_acc, ave_valid_loss = self.validate_model(model, valid_dl)
 

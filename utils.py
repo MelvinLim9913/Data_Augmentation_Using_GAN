@@ -1,6 +1,7 @@
 import logging.handlers
 import pathlib
 import json
+import numpy as np
 
 # Instantiate logger using module name and set level to INFO.
 logger = logging.getLogger("cnn")
@@ -96,3 +97,8 @@ def initialise_configs_file():
 
 def average(result):
     return sum(result) / len(result)
+
+
+def val_accuracy(prediction, ground_truth):
+    num_correct = (np.array(prediction) == np.array(ground_truth)).sum()
+    return num_correct / len(prediction)
