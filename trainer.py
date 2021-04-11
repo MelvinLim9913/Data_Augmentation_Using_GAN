@@ -31,21 +31,24 @@ class Classifier:
         self.test_path = None
         self.train_ds = None
         self.valid_ds = None
+        self.test_ds = None
         self.dataset = dataset
         self.configs = utils.initialise_configs_file()
         self.device = torch.device("cuda" if torch.cuda.is_available else "cpu")
+        self.get_data_file_path()
         # Model
         self.__cnn_model_type = utils.get_classifier_model_type(self.configs)
         self.logger.info(f"Model used for training: {self.__cnn_model_type}")
         self.weight_dir = f"weights/{self.__cnn_model_type}/{dataset}/"
         os.makedirs(self.weight_dir, exist_ok=True)
 
-    def read_data_from_path(self):
+    def get_data_file_path(self):
         image_file_path = self.configs.get("image_file_path", "")
         self.train_path = image_file_path[self.dataset]["train"]
         self.valid_path = image_file_path[self.dataset]["valid"]
         self.test_path = image_file_path[self.dataset]["test"]
 
+    def read_train_data_from_path(self):
         train_img_list = list()
         train_label_list = list()
         for train in self.train_path:
@@ -54,19 +57,12 @@ class Classifier:
                 train_img_list.extend(new_images)
                 for _ in range(len(new_images)):
                     train_label_list.append(class_number)
-
-        valid_img_list = list()
-        valid_label_list = list()
-        for class_number in range(7):
-            new_images = glob.glob(os.path.join(self.valid_path, str(class_number), '*.png'))
-            valid_img_list.extend(new_images)
-            for _ in range(len(new_images)):
-                valid_label_list.append(class_number)
-
-        return train_img_list, train_label_list, valid_img_list, valid_label_list
+        return train_img_list, train_label_list
 
     def load_and_transform_data(self):
-        train_img, train_label, valid_img, valid_label = self.read_data_from_path()
+        train_img, train_label = self.read_train_data_from_path()
+        valid_img, valid_label = utils.read_valid_or_test_data(self.valid_path)
+        test_img, test_label = utils.read_valid_or_test_data(self.test_path)
         img_transform = transforms.Compose([
             transforms.Resize((224, 224)),
             transforms.ToTensor()
@@ -75,11 +71,18 @@ class Classifier:
         self.train_ds = EmotionDataset(
             train_img,
             train_label,
-            transform=img_transform)
+            transform=img_transform
+        )
         self.valid_ds = EmotionDataset(
             valid_img,
             valid_label,
-            transform=img_transform)
+            transform=img_transform
+        )
+        self.test_ds = EmotionDataset(
+            test_img,
+            test_label,
+            transform=img_transform
+        )
 
     def initialise_excel_workbook(self):
         with pandas.ExcelWriter(f'{self.__cnn_model_type}_{self.dataset}_Classification_Report.xlsx', engine='openpyxl',
@@ -138,12 +141,33 @@ class Classifier:
             # running_corrects.append(torch.sum(prediction == label.data))
 
         ave_val_loss = running_loss / len(valid_dl)
-        ave_val_acc = utils.val_accuracy(predictions, ground_truths)
+        ave_val_acc = utils.calculate_accuracy(predictions, ground_truths)
 
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
             f.write(f'\t Val. Loss: {ave_val_loss:.3f}   |  Val. Acc: {ave_val_acc:.2f}%\n')
 
         return ave_val_acc, ave_val_loss
+
+    def test_model(self, model, test_dl):
+        model.eval()
+        ground_truths = []
+        predictions = []
+
+        for img, label in tqdm.tqdm(test_dl):
+            img = img.to(self.device)
+            label = label.to(self.device)
+
+            with torch.no_grad():
+                logits = model(img)
+                prediction = torch.argmax(logits, 1)
+                predictions.extend(prediction.tolist())
+                ground_truths.extend(label.tolist())
+        ave_test_accuracy = utils.calculate_accuracy(predictions, ground_truths)
+
+        with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
+            f.write(f'\t Test Accuracy: {ave_test_accuracy:.3f}\n')
+
+        return ave_test_accuracy, ground_truths, predictions
 
     def write_model_type_used_and_dataset_used_to_text(self):
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "w") as f:
@@ -154,9 +178,11 @@ class Classifier:
         parameter_details = utils.get_classifier_train_or_valid_params_by_type(self.configs, self.__cnn_model_type)
         train_params = parameter_details.get("train_params")
         valid_params = parameter_details.get("valid_params")
+        test_params = parameter_details.get("test_params")
         train_dl = DataLoader(self.train_ds, **train_params, shuffle=True, drop_last=True, pin_memory=True)
         valid_dl = DataLoader(self.valid_ds, **valid_params, pin_memory=True)
-        return train_dl, valid_dl
+        test_dl = DataLoader(self.test_ds, **test_params, pin_memory=True)
+        return train_dl, valid_dl, test_dl
 
     def train_with_backbone_freeze(self, num_epoch, train_dl, valid_dl, simulation_idx):
         baseline_model = CNNModel(self.__cnn_model_type)
@@ -202,7 +228,14 @@ class Classifier:
                 highest_acc = ave_train_acc
                 torch.save(model.state_dict(), os.path.join(
                     self.weight_dir, "weights_cycle{}.pth".format(simulation_idx + 1)))
-                self.logger.info(f"")
+
+    def test_model_performance(self, model, test_dl, simulation_idx):
+        state_dict = torch.load(os.path.join(self.weight_dir, "weights_cycle{}.pth".format(simulation_idx + 1)))
+        model.load_state_dict(state_dict)
+        test_accuracy, ground_truth, prediction = self.test_model(model, test_dl)
+        self.write_classification_report(ground_truth, prediction, simulation_idx)
+        self.logger.info(f"Done training. Testing model performance now.")
+        self.logger.info(f"\tTesting Accuracy: {test_accuracy}")
 
     def write_classification_report(self, ground_truths, predictions, simulation_idx):
         report = classification_report(ground_truths, predictions, output_dict=True)
@@ -229,7 +262,7 @@ if __name__ == "__main__":
     cnn_classifier.initialise_excel_workbook()
     cnn_classifier.write_model_type_used_and_dataset_used_to_text()
 
-    train_dataloader, valid_dataloader = cnn_classifier.create_dataloader()
+    train_dataloader, valid_dataloader, test_dataloader = cnn_classifier.create_dataloader()
 
     for i in range(5):
         train_model = cnn_classifier.train_with_backbone_freeze(
@@ -244,5 +277,11 @@ if __name__ == "__main__":
             num_epoch=30,
             train_dl=train_dataloader,
             valid_dl=valid_dataloader,
+            simulation_idx=i
+        )
+
+        cnn_classifier.test_model_performance(
+            model=train_model,
+            test_dl=test_dataloader,
             simulation_idx=i
         )

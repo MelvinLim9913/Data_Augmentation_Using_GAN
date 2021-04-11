@@ -1,6 +1,8 @@
 import logging.handlers
 import pathlib
 import json
+import glob
+import os
 import numpy as np
 
 # Instantiate logger using module name and set level to INFO.
@@ -89,6 +91,17 @@ def get_classifier_train_or_valid_params_by_type(configs, model_type):
     return {}
 
 
+def read_valid_or_test_data(data_path):
+    img_list = list()
+    label_list = list()
+    for class_number in range(7):
+        new_images = glob.glob(os.path.join(data_path, str(class_number), '*.png'))
+        img_list.extend(new_images)
+        for _ in range(len(new_images)):
+            label_list.append(class_number)
+    return img_list, label_list
+
+
 def initialise_configs_file():
     with open('configs.json', 'r') as f:
         configs = json.load(f)
@@ -99,6 +112,6 @@ def average(result):
     return sum(result) / len(result)
 
 
-def val_accuracy(prediction, ground_truth):
+def calculate_accuracy(prediction, ground_truth):
     num_correct = (np.array(prediction) == np.array(ground_truth)).sum()
     return (num_correct / len(prediction)) * 100
