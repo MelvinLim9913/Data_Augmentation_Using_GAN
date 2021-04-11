@@ -133,10 +133,10 @@ class Classifier:
             with torch.no_grad():
                 logits = model(img)
                 loss = criterion(logits, label)
-                prediction = torch.max(logits.data, 1)
+                _, prediction = torch.max(logits.data, 1)
 
             running_loss += (loss.item() * img.size(0))
-            running_corrects += torch.sum(prediction == label.data)
+            running_corrects += (prediction == label).sum().item()
             total += label.size
 
         ave_val_loss = running_loss / len(valid_dl)
