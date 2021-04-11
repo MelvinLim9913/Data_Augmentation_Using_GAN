@@ -70,7 +70,7 @@
         },
         {
           "type": "vgg19",
-          "enabled": true,
+          "enabled": false,
           "train_params": {
             "batch_size": 64,
             "num_workers": 4
@@ -85,8 +85,8 @@
           }
         },
         {
-          "type": "efficientnet-b2b",
-          "enabled": false,
+          "type": "efficientnet_b2b",
+          "enabled": true,
           "train_params": {
             "batch_size": 64,
             "num_workers": 4

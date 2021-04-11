@@ -121,8 +121,8 @@ class Classifier:
 
     def validate_model(self, model, valid_dl):
         running_loss = 0
-        ground_truths = []
-        predictions = []
+        total = 0
+        running_corrects = 0
         criterion = nn.CrossEntropyLoss().to(self.device)
         model.eval()
 
@@ -133,15 +133,14 @@ class Classifier:
             with torch.no_grad():
                 logits = model(img)
                 loss = criterion(logits, label)
-                prediction = torch.argmax(logits, 1)
-                predictions.extend(prediction.tolist())
-                ground_truths.extend(label.to(torch.device('cpu')).tolist())
+                prediction = torch.max(logits.data, 1)
 
             running_loss += (loss.item() * img.size(0))
-            # running_corrects.append(torch.sum(prediction == label.data))
+            running_corrects += (prediction == label).sum().item()
+            total += label.size
 
         ave_val_loss = running_loss / len(valid_dl)
-        ave_val_acc = utils.calculate_accuracy(predictions, ground_truths)
+        ave_val_acc = (running_corrects / total) * 100
 
         with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
             f.write(f'\t Val. Loss: {ave_val_loss:.3f}   |  Val. Acc: {ave_val_acc:.2f}%\n')

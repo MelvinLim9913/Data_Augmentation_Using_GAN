@@ -9,7 +9,7 @@ class CNNModel(nn.Module):
         pretrained = get_model(model_name, pretrained=True)
         # remove last layer of fc
         self.backbone = pretrained.features
-        pretrained.output.fc3 = nn.Linear(4096, 7)
+        # pretrained.output.fc3 = nn.Linear(4096, 7)
         self.output = pretrained.output
         self.classifier = nn.Linear(1000, 7)
 
