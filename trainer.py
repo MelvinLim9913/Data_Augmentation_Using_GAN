@@ -136,7 +136,7 @@ class Classifier:
                 prediction = torch.max(logits.data, 1)
 
             running_loss += (loss.item() * img.size(0))
-            running_corrects += (prediction == label).sum().item()
+            running_corrects += torch.sum(prediction == label.data)
             total += label.size
 
         ave_val_loss = running_loss / len(valid_dl)
