@@ -57,15 +57,11 @@
           "enabled": false,
           "train_params": {
             "batch_size": 64,
-            "shuffle": true,
-            "drop_last": true,
-            "num_workers": 4,
-            "pin_memory": true
+            "num_workers": 4
           },
           "valid_params": {
             "batch_size": 48,
-            "num_workers": 4,
-            "pin_memory": true
+            "num_workers": 4
           },
           "test_params": {
             "batch_size": 48,
@@ -77,15 +73,11 @@
           "enabled": true,
           "train_params": {
             "batch_size": 64,
-            "shuffle": true,
-            "drop_last": true,
-            "num_workers": 4,
-            "pin_memory": true
+            "num_workers": 4
           },
           "valid_params": {
             "batch_size": 48,
-            "num_workers": 4,
-            "pin_memory": true
+            "num_workers": 4
           },
           "test_params": {
             "batch_size": 48,
@@ -97,15 +89,11 @@
           "enabled": false,
           "train_params": {
             "batch_size": 64,
-            "shuffle": true,
-            "drop_last": true,
-            "num_workers": 4,
-            "pin_memory": true
+            "num_workers": 4
           },
           "valid_params": {
             "batch_size": 48,
-            "num_workers": 4,
-            "pin_memory": true
+            "num_workers": 4
           },
           "test_params": {
             "batch_size": 48,
