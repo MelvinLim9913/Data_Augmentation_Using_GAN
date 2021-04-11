@@ -137,7 +137,7 @@ class Classifier:
 
             running_loss += (loss.item() * img.size(0))
             running_corrects += (prediction == label).sum().item()
-            total += label.size
+            total += label.size()
 
         ave_val_loss = running_loss / len(valid_dl)
         ave_val_acc = (running_corrects / total) * 100
