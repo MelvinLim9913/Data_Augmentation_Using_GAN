@@ -73,7 +73,7 @@ if __name__ == "__main__":
     parser.add_argument("--stddv",
                         type=float)
     args = parser.parse_args()
-    noise = args.type()
+    noise = args.type
     standard_deviation = args.stddv
 
     noise_generator = NoiseImageGenerator(noise_type=noise, a=standard_deviation)
