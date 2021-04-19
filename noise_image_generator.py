@@ -62,7 +62,7 @@ class NoiseImageGenerator:
                 save_path = self.generated_image_filepath + "/" + image_label_df["Label"][
                         i] + "/"
                 pathlib.Path(save_path).mkdir(parents=True, exist_ok=True)
-                augmented_image.save(self.noise_type + "_" + str(self.noise_parameter) + "_" + str(
+                augmented_image.save(save_path + self.noise_type + "_" + str(self.noise_parameter) + "_" + str(
                         i) + "_" + str(k) + ".png")
         logging.info("Noise image generation completed.")
 
