@@ -14,9 +14,9 @@ class NoiseImageGenerator:
             emotion_image_path = os.path.join(self.original_image_filepath, str(i))
             emotion_image_files = os.listdir(emotion_image_path)
             image_label_dict["Image"] += [os.path.join(emotion_image_path, path) for path in emotion_image_files]
-            image_label_dict["Label"] += [0 for i in range(len(emotion_image_files))]
-            image_label_df = pd.DataFrame(image_label_dict)
-            print(image_label_df)
+            image_label_dict["Label"] += [i for _ in range(len(emotion_image_files))]
+        image_label_df = pd.DataFrame(image_label_dict)
+        print(image_label_df)
         return image_label_df
 
     def augment_image_with_noise(self):
