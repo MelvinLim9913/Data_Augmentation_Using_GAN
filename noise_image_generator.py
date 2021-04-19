@@ -11,14 +11,15 @@ from collections import defaultdict
 
 class NoiseImageGenerator:
     def __init__(self, noise_type, a):
-        self.logger = logging.getLogger('noise' + __name__)
         self.original_image_filepath = "dataset/original/train"
-        self.generated_image_filepath = f"dataset/noise/{noise_type}_{a}/"
+        self.generated_image_filepath = f"dataset/noise/{noise_type}_{a}"
         os.makedirs(self.generated_image_filepath, exist_ok=True)
-        self.logger.info(f"Type of noise chosen: {noise_type}")
-        self.logger.info(f"Parameter for noise chosen: {a}")
+        self.noise_type = noise_type
+        self.noise_parameter = a
+        logging.info(f"Type of noise chosen: {self.noise_type}")
+        logging.info(f"Parameter for noise chosen: {self.noise_parameter}")
         self.sequence = None
-        self.logger.info(f"Image generated will be saved into {self.generated_image_filepath}")
+        logging.info(f"Image generated will be saved into {self.generated_image_filepath}")
 
     def load_original_image(self):
         image_label_dict = defaultdict(list)
@@ -46,7 +47,7 @@ class NoiseImageGenerator:
         image_label_df = self.load_original_image()
         for label in image_label_df["Label"].unique():
             image_generation_cycle_dict[str(label)] = 10000 // (image_label_df["Label"] == label).sum()
-        self.logger.info(
+        logging.info(
             f"How many times an image the image will be generated in each class:\n{image_generation_cycle_dict}")
         return image_label_df, image_generation_cycle_dict
 
@@ -59,9 +60,10 @@ class NoiseImageGenerator:
             for k in range(number_of_times_adding_noise):
                 augmented_image = PIL.Image.fromarray(self.sequence(image=images))
                 augmented_image.save(
-                    self.generated_image_filepath + image_label_df["Label"][i] + "/" + "Noise" + str(i) + str(
-                        k) + ".png")
-        self.logger.info("Noise image generation completed.")
+                    self.generated_image_filepath + "/" + image_label_df["Label"][
+                        i] + "/" + self.noise_type + "_" + self.noise_parameter + "_" + str(
+                        i) + "_" + str(k) + ".png")
+        logging.info("Noise image generation completed.")
 
 
 if __name__ == "__main__":
