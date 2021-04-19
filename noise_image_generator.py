@@ -61,7 +61,7 @@ class NoiseImageGenerator:
                 augmented_image = PIL.Image.fromarray(self.sequence(image=images))
                 augmented_image.save(
                     self.generated_image_filepath + "/" + image_label_df["Label"][
-                        i] + "/" + self.noise_type + "_" + self.noise_parameter + "_" + str(
+                        i] + "/" + self.noise_type + "_" + str(self.noise_parameter) + "_" + str(
                         i) + "_" + str(k) + ".png")
         logging.info("Noise image generation completed.")
 
