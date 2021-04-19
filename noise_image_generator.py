@@ -13,7 +13,6 @@ class NoiseImageGenerator:
     def __init__(self, noise_type, a):
         self.original_image_filepath = "dataset/original/train"
         self.generated_image_filepath = f"dataset/noise/{noise_type}_{a}"
-        os.makedirs(self.generated_image_filepath, exist_ok=True)
         self.noise_type = noise_type
         self.noise_parameter = a
         logging.info(f"Type of noise chosen: {self.noise_type}")
