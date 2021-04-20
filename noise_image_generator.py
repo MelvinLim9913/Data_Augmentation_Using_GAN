@@ -8,18 +8,22 @@ import pathlib
 import imgaug.augmenters as iaa
 import pandas as pd
 from collections import defaultdict
+import utils
+
+logger = logging.getLogger("cnn." + __name__)
 
 
 class NoiseImageGenerator:
     def __init__(self, noise_type, a):
+        self.logger = logging.getLogger("cnn." + __name__)
         self.original_image_filepath = "dataset/original/train"
         self.generated_image_filepath = f"dataset/noise/{noise_type}_{a}"
         self.noise_type = noise_type
         self.noise_parameter = a
-        logging.info(f"Type of noise chosen: {self.noise_type}")
-        logging.info(f"Parameter for noise chosen: {self.noise_parameter}")
+        self.logger.info(f"Type of noise chosen: {self.noise_type}")
+        self.logger.info(f"Parameter for noise chosen: {self.noise_parameter}")
         self.sequence = None
-        logging.info(f"Image generated will be saved into {self.generated_image_filepath}")
+        self.logger.info(f"Image generated will be saved into {self.generated_image_filepath}")
 
     def load_original_image(self):
         image_label_dict = defaultdict(list)
@@ -47,7 +51,7 @@ class NoiseImageGenerator:
         image_label_df = self.load_original_image()
         for label in image_label_df["Label"].unique():
             image_generation_cycle_dict[str(label)] = 10000 // (image_label_df["Label"] == label).sum()
-        logging.info(
+        self.logger.info(
             f"How many times an image the image will be generated in each class:\n{image_generation_cycle_dict}")
         return image_label_df, image_generation_cycle_dict
 
@@ -64,7 +68,7 @@ class NoiseImageGenerator:
                 pathlib.Path(save_path).mkdir(parents=True, exist_ok=True)
                 augmented_image.save(save_path + self.noise_type + "_" + str(self.noise_parameter) + "_" + str(
                         i) + "_" + str(k) + ".png")
-        logging.info("Noise image generation completed.")
+        self.logger.info("Noise image generation completed.")
 
 
 if __name__ == "__main__":

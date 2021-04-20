@@ -26,13 +26,7 @@ if logger.hasHandlers():
 # Add handler to logger.
 logger.addHandler(ch)
 logger.addHandler(fh)
-# Ensure NLP logger does not propagate to root logger.
-# So that in the event that a handler is added to the root logger
-# (sometimes accidentally done by an underlying package),
-# NLP logger will not propagate logs to the root logger,
-# to avoid duplicate logging output.
 logger.propagate = False
-
 # Use child logger.
 logger = logging.getLogger("cnn." + __name__)
 
