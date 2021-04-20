@@ -251,8 +251,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset",
                         default="original",
-                        type=str,
-                        choices=["original", "esrgan", "wgan"])
+                        type=str)
     args = parser.parse_args()
     dataset = args.dataset
 

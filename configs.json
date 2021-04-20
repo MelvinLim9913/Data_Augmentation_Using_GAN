@@ -5,6 +5,26 @@
       "valid": "dataset/original/val",
       "test" : "dataset/original/test"
     },
+    "gaussian_11": {
+      "train": ["dataset/noise/gaussian_11.0"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "gaussian_21": {
+      "train": ["dataset/noise/gaussian_21.0"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "gaussian_31": {
+      "train": ["dataset/noise/gaussian_31.0"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "gaussian_51": {
+      "train": ["dataset/noise/gaussian_51.0"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
     "esrgan": {
       "train": "",
       "valid": "",
@@ -37,8 +57,8 @@
           }
         },
         {
-          "type": "resnet101",
-          "enabled": false,
+          "type": "resnet152",
+          "enabled": true,
           "train_params": {
             "batch_size": 64,
             "num_workers": 4
@@ -86,7 +106,7 @@
         },
         {
           "type": "efficientnet_b2b",
-          "enabled": true,
+          "enabled": false,
           "train_params": {
             "batch_size": 64,
             "num_workers": 4
