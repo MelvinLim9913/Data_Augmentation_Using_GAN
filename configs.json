@@ -90,7 +90,7 @@
         },
         {
           "type": "vgg19",
-          "enabled": true,
+          "enabled": false,
           "train_params": {
             "batch_size": 48,
             "num_workers": 4
