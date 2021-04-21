@@ -58,7 +58,7 @@
         },
         {
           "type": "resnet152",
-          "enabled": true,
+          "enabled": false,
           "train_params": {
             "batch_size": 64,
             "num_workers": 4

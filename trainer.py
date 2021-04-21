@@ -216,7 +216,7 @@ class Classifier:
         for epoch in range(num_epoch):
             with open(f'{self.__cnn_model_type}_{dataset}_Log_File.txt', "a") as f:
                 f.write(f"\nEPOCH {epoch + 1} of Cycle{simulation_idx + 1}\n")
-            self.logger.info(f"Cycle-{simulation_idx + 1}\tEPOCH--{epoch + 1}")
+            self.logger.info(f"Cycle-{simulation_idx +1}\tEPOCH--{epoch + 1}")
             ave_train_acc, ave_train_loss = self.train_model(model, optimizer, train_dl)
             ave_valid_acc, ave_valid_loss = self.validate_model(model, valid_dl)
 

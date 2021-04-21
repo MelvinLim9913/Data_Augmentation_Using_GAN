@@ -76,7 +76,7 @@ if __name__ == "__main__":
     parser.add_argument("--type",
                         default="gaussian",
                         type=str,
-                        choices=["gaussian", "poisson", "laplace" "salt&pepper"])
+                        choices=["gaussian", "poisson", "laplace", "salt&pepper"])
     parser.add_argument("--stddv",
                         type=float)
     args = parser.parse_args()
