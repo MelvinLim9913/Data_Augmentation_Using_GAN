@@ -25,6 +25,26 @@
       "valid": "dataset/original/val",
       "test" : "dataset/original/test"
     },
+    "laplace_1": {
+      "train": ["dataset/noise/laplace_1.0"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "laplace_3": {
+      "train": ["dataset/noise/laplace_3.0"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "laplace_7": {
+      "train": ["dataset/noise/laplace_7.0"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "laplce_10": {
+      "train": ["dataset/noise/laplace_10.0"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
     "esrgan": {
       "train": "",
       "valid": "",
