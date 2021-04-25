@@ -45,6 +45,26 @@
       "valid": "dataset/original/val",
       "test" : "dataset/original/test"
     },
+    "saltpepper_0.05": {
+      "train": ["dataset/noise/salt&pepper_0.05"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "saltpepper_0.1": {
+      "train": ["dataset/noise/salt&pepper_0.1"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "saltpepper_0.15": {
+      "train": ["dataset/noise/salt&pepper_0.15"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "saltpepper_0.2": {
+      "train": ["dataset/noise/salt&pepper_0.2"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
     "esrgan": {
       "train": "",
       "valid": "",
