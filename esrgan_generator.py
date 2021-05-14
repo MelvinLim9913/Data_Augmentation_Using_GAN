@@ -46,7 +46,7 @@ def generate_image(input_img_path, output_image_path):
 
 for class_number in range(7):
     for data_type in ["train", "val", "test"]:
-        input_path = os.path.join("dataset/original", data_type, f"{class_number}/*")
-        output_path = os.path.join(output_path, data_type, f"{class_number}")
+        input_file_path = os.path.join("dataset/original", data_type, f"{class_number}/*")
+        output_file_path = os.path.join(output_path, data_type, f"{class_number}")
 
-        generate_image(input_path, output_path)
+        generate_image(input_file_path, output_file_path)
