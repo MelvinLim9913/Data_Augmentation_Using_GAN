@@ -86,14 +86,9 @@
       "test" : "dataset/original/test"
     },
     "esrgan": {
-      "train": "",
-      "valid": "",
-      "test": ""
-    },
-    "wgan": {
-      "train": "",
-      "valid": "",
-      "test": ""
+      "train": ["dataset/esrgan/train", "dataset/original/train"],
+      "valid": "dataset/original/val",
+      "test": "dataset/original/test"
     }
   },
   "weight_path": "weight",
