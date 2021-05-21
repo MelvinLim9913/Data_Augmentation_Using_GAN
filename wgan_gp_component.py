@@ -23,7 +23,7 @@ class Generator(nn.Module):
             *block(128, 256),
             *block(256, 512),
             *block(512, 1024),
-            nn.Linear(1024, int(np.prod(3, 255, 255))),
+            nn.Linear(1024, int(np.prod((3, 255, 255)))),
             nn.Tanh()
         )
 
