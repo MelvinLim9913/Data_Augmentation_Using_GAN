@@ -79,7 +79,7 @@ def compute_gradient_penalty(D, real_samples, fake_samples):
 
 for class_number in range(7):
     sample_images_dir = os.path.join(
-        weights_dir, class_number, "sample_images")
+        weights_dir, str(class_number), "sample_images")
     class_weights_dir = os.path.join(weights_dir, class_number)
 
     os.makedirs(sample_images_dir, exist_ok=True)
