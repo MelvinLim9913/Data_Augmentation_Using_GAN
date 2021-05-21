@@ -86,7 +86,7 @@ for class_number in range(7):
     os.makedirs(class_weights_dir, exist_ok=True)
 
     # Configure data loader
-    dataset = MyDataset(path=os.path.join(dataroot, "train", class_number),
+    dataset = MyDataset(path=os.path.join(dataroot, class_number),
                         transform=transforms.Compose([
                             transforms.Resize(opt.img_size),
                             transforms.ToTensor(),
