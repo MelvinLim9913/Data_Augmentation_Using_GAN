@@ -89,6 +89,11 @@
       "train": ["dataset/esrgan/train", "dataset/original/train"],
       "valid": "dataset/original/val",
       "test": "dataset/original/test"
+    },
+    "salt_pepper_original": {
+      "train": ["dataset/noise/salt&pepper_0.1", "dataset/original/train"],
+      "valid": "dataset/original/val",
+      "test": "dataset/original/test"
     }
   },
   "weight_path": "weight",
