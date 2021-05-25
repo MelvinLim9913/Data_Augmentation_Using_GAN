@@ -1,9 +1,12 @@
 import logging.handlers
 import pathlib
 import json
+import glob
+import os
+import numpy as np
 
 # Instantiate logger using module name and set level to INFO.
-logger = logging.getLogger("gan")
+logger = logging.getLogger("cnn")
 logger.setLevel(logging.INFO)
 # Instantiate streamhandler (which outputs to sys.stderr by default) and set level to INFO.
 ch = logging.StreamHandler()
@@ -23,15 +26,9 @@ if logger.hasHandlers():
 # Add handler to logger.
 logger.addHandler(ch)
 logger.addHandler(fh)
-# Ensure NLP logger does not propagate to root logger.
-# So that in the event that a handler is added to the root logger
-# (sometimes accidentally done by an underlying package),
-# NLP logger will not propagate logs to the root logger,
-# to avoid duplicate logging output.
 logger.propagate = False
-
 # Use child logger.
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("cnn." + __name__)
 
 
 def get_classifier_model_type(configs):
@@ -88,6 +85,17 @@ def get_classifier_train_or_valid_params_by_type(configs, model_type):
     return {}
 
 
+def read_valid_or_test_data(data_path):
+    img_list = list()
+    label_list = list()
+    for class_number in range(7):
+        new_images = glob.glob(os.path.join(data_path, str(class_number), '*.png'))
+        img_list.extend(new_images)
+        for _ in range(len(new_images)):
+            label_list.append(class_number)
+    return img_list, label_list
+
+
 def initialise_configs_file():
     with open('configs.json', 'r') as f:
         configs = json.load(f)
@@ -96,3 +104,8 @@ def initialise_configs_file():
 
 def average(result):
     return sum(result) / len(result)
+
+
+def calculate_accuracy(prediction, ground_truth):
+    num_correct = (np.array(prediction) == np.array(ground_truth)).sum()
+    return (num_correct / len(prediction)) * 100

@@ -1,19 +1,99 @@
 {
   "image_file_path": {
     "original": {
-      "train": "dataset/original/train",
-      "valid": "dataset/original/valid",
+      "train": ["dataset/original/train"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "gaussian_11": {
+      "train": ["dataset/noise/gaussian_11.0"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "gaussian_21": {
+      "train": ["dataset/noise/gaussian_21.0"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "gaussian_31": {
+      "train": ["dataset/noise/gaussian_31.0"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "gaussian_51": {
+      "train": ["dataset/noise/gaussian_51.0"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "laplace_1": {
+      "train": ["dataset/noise/laplace_1.0"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "laplace_3": {
+      "train": ["dataset/noise/laplace_3.0"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "laplace_7": {
+      "train": ["dataset/noise/laplace_7.0"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "laplce_10": {
+      "train": ["dataset/noise/laplace_10.0"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "saltpepper_0.05": {
+      "train": ["dataset/noise/salt&pepper_0.05"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "saltpepper_0.1": {
+      "train": ["dataset/noise/salt&pepper_0.1"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "saltpepper_0.15": {
+      "train": ["dataset/noise/salt&pepper_0.15"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "saltpepper_0.2": {
+      "train": ["dataset/noise/salt&pepper_0.2"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "poisson_5": {
+      "train": ["dataset/noise/poisson_5.0"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "poisson_10": {
+      "train": ["dataset/noise/poisson_10.0"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "poisson_20": {
+      "train": ["dataset/noise/poisson_20.0"],
+      "valid": "dataset/original/val",
+      "test" : "dataset/original/test"
+    },
+    "poisson_40": {
+      "train": ["dataset/noise/poisson_40.0"],
+      "valid": "dataset/original/val",
       "test" : "dataset/original/test"
     },
     "esrgan": {
-      "train": "",
-      "valid": "",
-      "test": ""
+      "train": ["dataset/esrgan/train", "dataset/original/train"],
+      "valid": "dataset/original/val",
+      "test": "dataset/original/test"
     },
-    "wgan": {
-      "train": "",
-      "valid": "",
-      "test": ""
+    "salt_pepper_original": {
+      "train": ["dataset/noise/salt&pepper_0.1", "dataset/original/train"],
+      "valid": "dataset/original/val",
+      "test": "dataset/original/test"
     }
   },
   "weight_path": "weight",
@@ -22,35 +102,83 @@
       "models": [
         {
           "type": "resnet50",
-          "enabled": true,
+          "enabled": false,
           "train_params": {
-            "batch_size": 48,
-            "shuffle": true,
-            "drop_last": true,
-            "num_workers": 4,
-            "pin_memory": true
+            "batch_size": 64,
+            "num_workers": 4
           },
           "valid_params": {
-            "batch_size": 48,
-            "num_workers": 2,
-            "pin_memory": true
+            "batch_size": 64,
+            "num_workers": 4
+          },
+          "test_params": {
+            "batch_size": 64,
+            "num_workers": 4
           }
         },
         {
           "type": "resnet101",
-          "enabled": false
+          "enabled": true,
+          "train_params": {
+            "batch_size": 64,
+            "num_workers": 4
+          },
+          "valid_params": {
+            "batch_size": 64,
+            "num_workers": 4
+          },
+          "test_params": {
+            "batch_size": 64,
+            "num_workers": 4
+          }
         },
         {
           "type": "vgg16",
-          "enabled": false
+          "enabled": false,
+          "train_params": {
+            "batch_size": 64,
+            "num_workers": 4
+          },
+          "valid_params": {
+            "batch_size": 48,
+            "num_workers": 4
+          },
+          "test_params": {
+            "batch_size": 48,
+            "num_workers": 4
+          }
         },
         {
           "type": "vgg19",
-          "enabled": false
+          "enabled": false,
+          "train_params": {
+            "batch_size": 48,
+            "num_workers": 4
+          },
+          "valid_params": {
+            "batch_size": 48,
+            "num_workers": 4
+          },
+          "test_params": {
+            "batch_size": 48,
+            "num_workers": 4
+          }
         },
         {
-          "type": "efficientnet-b2b",
-          "enabled": false
+          "type": "efficientnet_b2b",
+          "enabled": false,
+          "train_params": {
+            "batch_size": 64,
+            "num_workers": 4
+          },
+          "valid_params": {
+            "batch_size": 48,
+            "num_workers": 4
+          },
+          "test_params": {
+            "batch_size": 48,
+            "num_workers": 4
+          }
         }
       ]
     }
